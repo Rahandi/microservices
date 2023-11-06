@@ -1,0 +1,16 @@
+name: iamservice
+
+services:
+  database:
+    image: mysql:8.2.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: iamservice
+    ports:
+      - 3306:3306
+    volumes:
+      - database:/var/lib/mysql
+
+volumes:
+  database:
+    driver: local
