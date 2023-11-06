@@ -24,7 +24,7 @@ func main() {
 		log.Fatal(err)
 	}
 	database.AutoMigrate(
-		&models.User{},
+		&models.DBUser{},
 	)
 
 	authRepository := repositories.NewAuthRepository(database)

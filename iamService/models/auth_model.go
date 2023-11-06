@@ -26,7 +26,7 @@ type WhoAmIResponse struct {
 }
 
 // DB related model
-type User struct {
+type DBUser struct {
 	ID       uint `gorm:"primaryKey"`
 	Name     string
 	Email    string `gorm:"unique"`

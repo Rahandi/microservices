@@ -17,27 +17,27 @@ func NewAuthRepository(db *gorm.DB) *AuthRepository {
 	return authRepository
 }
 
-func (r *AuthRepository) Create(user *models.User) error {
+func (r *AuthRepository) Create(user *models.DBUser) error {
 	err := r.db.Create(user).Error
 	return err
 }
 
-func (r *AuthRepository) FindByID(id uint) *models.User {
-	var user models.User
+func (r *AuthRepository) FindByID(id uint) *models.DBUser {
+	var user models.DBUser
 	r.db.First(&user, id)
 
-	if user == (models.User{}) {
+	if user == (models.DBUser{}) {
 		return nil
 	}
 
 	return &user
 }
 
-func (r *AuthRepository) FindByEmail(email string) *models.User {
-	var user models.User
+func (r *AuthRepository) FindByEmail(email string) *models.DBUser {
+	var user models.DBUser
 	r.db.Where("email = ?", email).First(&user)
 
-	if user == (models.User{}) {
+	if user == (models.DBUser{}) {
 		return nil
 	}
 

@@ -28,7 +28,7 @@ func (s *AuthService) Register(input *models.RegisterRequest) (*models.RegisterR
 		return nil, err
 	}
 
-	user := models.User{
+	user := models.DBUser{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: string(hashedPassword),
@@ -89,7 +89,7 @@ func (s *AuthService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
 	}, nil
 }
 
-func (s *AuthService) generateToken(user *models.User) (string, error) {
+func (s *AuthService) generateToken(user *models.DBUser) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": user.ID,
 	}
