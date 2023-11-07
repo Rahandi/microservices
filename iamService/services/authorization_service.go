@@ -1,9 +1,11 @@
 package services
 
 import (
+	"errors"
 	"iamService/internals"
 	"iamService/models"
 	"iamService/repositories"
+	"strconv"
 )
 
 type AuthorizationService struct {
@@ -26,10 +28,14 @@ func (s *AuthorizationService) WhoAmI(token string) (*models.WhoAmIResponse, err
 		return nil, err
 	}
 
-	sub := claims["sub"].(float64)
-	user := s.userRepository.FindByID(uint(sub))
+	userId, err := strconv.Atoi(claims.Subject)
+	if err != nil {
+		return nil, err
+	}
+
+	user := s.userRepository.FindByID(uint(userId))
 	if user == nil {
-		return nil, nil
+		return nil, errors.New("user not found")
 	}
 
 	return &models.WhoAmIResponse{

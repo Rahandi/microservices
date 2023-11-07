@@ -2,9 +2,12 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"iamService/internals"
 	"iamService/models"
 	"iamService/repositories"
+	"log"
+	"time"
 
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -70,28 +73,19 @@ func (s *AuthenticationService) Login(input *models.LoginRequest) (*models.Login
 	}, nil
 }
 
-func (s *AuthenticationService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
-	claims, err := s.DecodeToken(token)
-	if err != nil {
-		return nil, err
-	}
-
-	sub := claims["sub"].(float64)
-	user := s.userRepository.FindByID(uint(sub))
-	if user == nil {
-		return nil, errors.New("user not found")
-	}
-
-	return &models.WhoAmIResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-	}, nil
-}
-
 func (s *AuthenticationService) generateToken(user *models.DBUser) (string, error) {
-	claims := jwt.MapClaims{
-		"sub": user.ID,
+	parsedExpires, err := time.ParseDuration(s.config.JwtExpires)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	claims := &models.JWTClaims{
+		StandardClaims: &jwt.StandardClaims{
+			Subject:   fmt.Sprint(user.ID),
+			Issuer:    "iamService",
+			ExpiresAt: time.Now().Add(parsedExpires).Unix(),
+		},
+		Email: user.Email,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -103,15 +97,15 @@ func (s *AuthenticationService) generateToken(user *models.DBUser) (string, erro
 	return signed, nil
 }
 
-func (s *AuthenticationService) DecodeToken(token string) (jwt.MapClaims, error) {
-	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+func (s *AuthenticationService) DecodeToken(token string) (*models.JWTClaims, error) {
+	parsed, err := jwt.ParseWithClaims(token, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.config.JwtSecret), nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	claims, ok := parsed.Claims.(jwt.MapClaims)
+	claims, ok := parsed.Claims.(*models.JWTClaims)
 	if !ok {
 		return nil, errors.New("invalid token")
 	}
