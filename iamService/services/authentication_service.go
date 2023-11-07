@@ -10,19 +10,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type AuthService struct {
-	config     *internals.Config
-	repository *repositories.AuthRepository
+type AuthenticationService struct {
+	config         *internals.Config
+	userRepository *repositories.UserRepository
 }
 
-func NewAuthService(config *internals.Config, repository *repositories.AuthRepository) *AuthService {
-	return &AuthService{
-		config:     config,
-		repository: repository,
+func NewAuthenticationService(config *internals.Config, repository *repositories.UserRepository) *AuthenticationService {
+	return &AuthenticationService{
+		config:         config,
+		userRepository: repository,
 	}
 }
 
-func (s *AuthService) Register(input *models.RegisterRequest) (*models.RegisterResponse, error) {
+func (s *AuthenticationService) Register(input *models.RegisterRequest) (*models.RegisterResponse, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 12)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func (s *AuthService) Register(input *models.RegisterRequest) (*models.RegisterR
 		Password: string(hashedPassword),
 	}
 
-	err = s.repository.Create(&user)
+	err = s.userRepository.Create(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -49,8 +49,8 @@ func (s *AuthService) Register(input *models.RegisterRequest) (*models.RegisterR
 	}, nil
 }
 
-func (s *AuthService) Login(input *models.LoginRequest) (*models.LoginResponse, error) {
-	user := s.repository.FindByEmail(input.Email)
+func (s *AuthenticationService) Login(input *models.LoginRequest) (*models.LoginResponse, error) {
+	user := s.userRepository.FindByEmail(input.Email)
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -70,14 +70,14 @@ func (s *AuthService) Login(input *models.LoginRequest) (*models.LoginResponse, 
 	}, nil
 }
 
-func (s *AuthService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
+func (s *AuthenticationService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
 	claims, err := s.decodeToken(token)
 	if err != nil {
 		return nil, err
 	}
 
 	sub := claims["sub"].(float64)
-	user := s.repository.FindByID(uint(sub))
+	user := s.userRepository.FindByID(uint(sub))
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -89,7 +89,7 @@ func (s *AuthService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
 	}, nil
 }
 
-func (s *AuthService) generateToken(user *models.DBUser) (string, error) {
+func (s *AuthenticationService) generateToken(user *models.DBUser) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": user.ID,
 	}
@@ -103,7 +103,7 @@ func (s *AuthService) generateToken(user *models.DBUser) (string, error) {
 	return signed, nil
 }
 
-func (s *AuthService) decodeToken(token string) (jwt.MapClaims, error) {
+func (s *AuthenticationService) decodeToken(token string) (jwt.MapClaims, error) {
 	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.config.JwtSecret), nil
 	})

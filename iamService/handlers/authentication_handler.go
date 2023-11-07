@@ -7,32 +7,32 @@ import (
 	"net/http"
 )
 
-type AuthHandler struct {
+type AuthenticationHandler struct {
 	httpServer  *http.ServeMux
-	authService *services.AuthService
+	authService *services.AuthenticationService
 }
 
-func NewAuthHandler(httpServer *http.ServeMux, authService *services.AuthService) *AuthHandler {
-	return &AuthHandler{
+func NewAuthenticationHandler(httpServer *http.ServeMux, authService *services.AuthenticationService) *AuthenticationHandler {
+	return &AuthenticationHandler{
 		httpServer:  httpServer,
 		authService: authService,
 	}
 }
 
-func (h *AuthHandler) Register() {
+func (h *AuthenticationHandler) Register() {
 	h.httpServer.HandleFunc("/register", h.registerHandler)
 	h.httpServer.HandleFunc("/login", h.loginHandler)
 	h.httpServer.HandleFunc("/whoami", h.whoamiHandler)
 }
 
-func (h *AuthHandler) handleError(err error, w http.ResponseWriter) {
+func (h *AuthenticationHandler) handleError(err error, w http.ResponseWriter) {
 	errorResponse := &models.ErrorResponse{
 		Message: err.Error(),
 	}
 	json.NewEncoder(w).Encode(errorResponse)
 }
 
-func (h *AuthHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
+func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var input models.RegisterRequest
 	err := decoder.Decode(&input)
@@ -48,7 +48,7 @@ func (h *AuthHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *AuthHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
+func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var input models.LoginRequest
 	err := decoder.Decode(&input)
@@ -64,7 +64,7 @@ func (h *AuthHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func (h *AuthHandler) whoamiHandler(w http.ResponseWriter, r *http.Request) {
+func (h *AuthenticationHandler) whoamiHandler(w http.ResponseWriter, r *http.Request) {
 	token := r.Header.Get("Authorization")
 	token = token[7:]
 	response, err := h.authService.WhoAmI(token)

@@ -27,10 +27,17 @@ func main() {
 		&models.DBUser{},
 	)
 
-	authRepository := repositories.NewAuthRepository(database)
-	authService := services.NewAuthService(config, authRepository)
-	authHandler := handlers.NewAuthHandler(httpServer, authService)
-	authHandler.Register()
+	userRepository := repositories.NewUserRepository(database)
+
+	authService := services.NewAuthenticationService(config, userRepository)
+
+	handlers := []handlers.Handler{
+		handlers.NewAuthenticationHandler(httpServer, authService),
+	}
+
+	for _, handler := range handlers {
+		handler.Register()
+	}
 
 	log.Println("Server run on port " + config.Port)
 	log.Fatal(http.ListenAndServe(":"+config.Port, httpServer))

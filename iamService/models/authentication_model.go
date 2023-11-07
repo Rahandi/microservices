@@ -24,11 +24,3 @@ type WhoAmIResponse struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
-
-// DB related model
-type DBUser struct {
-	ID       uint `gorm:"primaryKey"`
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string
-}
