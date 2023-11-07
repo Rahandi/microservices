@@ -95,7 +95,7 @@ func (s *AuthService) generateToken(user *models.DBUser) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signed, err := token.SignedString([]byte(s.config.Jwt.Secret))
+	signed, err := token.SignedString([]byte(s.config.JwtSecret))
 	if err != nil {
 		return "", err
 	}
@@ -105,7 +105,7 @@ func (s *AuthService) generateToken(user *models.DBUser) (string, error) {
 
 func (s *AuthService) decodeToken(token string) (jwt.MapClaims, error) {
 	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte(s.config.Jwt.Secret), nil
+		return []byte(s.config.JwtSecret), nil
 	})
 	if err != nil {
 		return nil, err

@@ -3,34 +3,43 @@ package internals
 import (
 	"encoding/json"
 	"os"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Port string
+	Port string `mapstructure:"PORT"`
 
-	Database struct {
-		Host     string
-		Port     string
-		Username string
-		Password string
-		Database string
-	}
+	DatabaseName     string `mapstructure:"DB_NAME"`
+	DatabaseHost     string `mapstructure:"DB_HOST"`
+	DatabasePort     string `mapstructure:"DB_PORT"`
+	DatabaseUsername string `mapstructure:"DB_USERNAME"`
+	DatabasePassword string `mapstructure:"DB_PASSWORD"`
 
-	Jwt struct {
-		Secret string
-	}
+	JwtSecret string `mapstructure:"JWT_SECRET"`
 }
 
 func NewConfig() *Config {
+	config := Config{}
+
 	file, err := os.Open("config.json")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-
 	decoder := json.NewDecoder(file)
-	config := Config{}
 	err = decoder.Decode(&config)
+	if err != nil {
+		panic(err)
+	}
+
+	viper.SetConfigFile(".env")
+	viper.AutomaticEnv()
+	err = viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+	err = viper.Unmarshal(&config)
 	if err != nil {
 		panic(err)
 	}

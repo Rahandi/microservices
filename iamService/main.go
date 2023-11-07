@@ -18,7 +18,7 @@ func main() {
 
 	httpServer := http.NewServeMux()
 
-	dsn := config.Database.Username + ":" + config.Database.Password + "@tcp(" + config.Database.Host + ":" + config.Database.Port + ")/" + config.Database.Database + "?parseTime=True"
+	dsn := config.DatabaseUsername + ":" + config.DatabasePassword + "@tcp(" + config.DatabaseHost + ":" + config.DatabasePort + ")/" + config.DatabaseName + "?parseTime=True"
 	database, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		log.Fatal(err)
