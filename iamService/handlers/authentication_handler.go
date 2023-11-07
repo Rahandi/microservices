@@ -8,28 +8,18 @@ import (
 )
 
 type AuthenticationHandler struct {
-	httpServer  *http.ServeMux
-	authService *services.AuthenticationService
+	authenticationService *services.AuthenticationService
 }
 
-func NewAuthenticationHandler(httpServer *http.ServeMux, authService *services.AuthenticationService) *AuthenticationHandler {
+func NewAuthenticationHandler(authenticationService *services.AuthenticationService) *AuthenticationHandler {
 	return &AuthenticationHandler{
-		httpServer:  httpServer,
-		authService: authService,
+		authenticationService: authenticationService,
 	}
 }
 
-func (h *AuthenticationHandler) Register() {
-	h.httpServer.HandleFunc("/register", h.registerHandler)
-	h.httpServer.HandleFunc("/login", h.loginHandler)
-	h.httpServer.HandleFunc("/whoami", h.whoamiHandler)
-}
-
-func (h *AuthenticationHandler) handleError(err error, w http.ResponseWriter) {
-	errorResponse := &models.ErrorResponse{
-		Message: err.Error(),
-	}
-	json.NewEncoder(w).Encode(errorResponse)
+func (h *AuthenticationHandler) Register(httpServer *http.ServeMux) {
+	httpServer.HandleFunc("/register", h.registerHandler)
+	httpServer.HandleFunc("/login", h.loginHandler)
 }
 
 func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,12 +27,12 @@ func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.R
 	var input models.RegisterRequest
 	err := decoder.Decode(&input)
 	if err != nil {
-		h.handleError(err, w)
+		handleError(w, err)
 		return
 	}
-	response, err := h.authService.Register(&input)
+	response, err := h.authenticationService.Register(&input)
 	if err != nil {
-		h.handleError(err, w)
+		handleError(w, err)
 		return
 	}
 	json.NewEncoder(w).Encode(response)
@@ -53,23 +43,12 @@ func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Requ
 	var input models.LoginRequest
 	err := decoder.Decode(&input)
 	if err != nil {
-		h.handleError(err, w)
+		handleError(w, err)
 		return
 	}
-	response, err := h.authService.Login(&input)
+	response, err := h.authenticationService.Login(&input)
 	if err != nil {
-		h.handleError(err, w)
-		return
-	}
-	json.NewEncoder(w).Encode(response)
-}
-
-func (h *AuthenticationHandler) whoamiHandler(w http.ResponseWriter, r *http.Request) {
-	token := r.Header.Get("Authorization")
-	token = token[7:]
-	response, err := h.authService.WhoAmI(token)
-	if err != nil {
-		h.handleError(err, w)
+		handleError(w, err)
 		return
 	}
 	json.NewEncoder(w).Encode(response)

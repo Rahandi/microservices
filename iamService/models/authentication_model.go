@@ -18,9 +18,3 @@ type LoginRequest struct {
 type LoginResponse struct {
 	Token string `json:"token"`
 }
-
-type WhoAmIResponse struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}

@@ -71,7 +71,7 @@ func (s *AuthenticationService) Login(input *models.LoginRequest) (*models.Login
 }
 
 func (s *AuthenticationService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
-	claims, err := s.decodeToken(token)
+	claims, err := s.DecodeToken(token)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (s *AuthenticationService) generateToken(user *models.DBUser) (string, erro
 	return signed, nil
 }
 
-func (s *AuthenticationService) decodeToken(token string) (jwt.MapClaims, error) {
+func (s *AuthenticationService) DecodeToken(token string) (jwt.MapClaims, error) {
 	parsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(s.config.JwtSecret), nil
 	})

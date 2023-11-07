@@ -1,5 +1,7 @@
 package handlers
 
+import "net/http"
+
 type Handler interface {
-	Register()
+	Register(httpServer *http.ServeMux)
 }

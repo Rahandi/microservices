@@ -3,42 +3,51 @@ package main
 import (
 	"iamService/handlers"
 	"iamService/internals"
-	"iamService/models"
 	"iamService/repositories"
 	"iamService/services"
 	"log"
 	"net/http"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
 	config := internals.NewConfig()
-
-	httpServer := http.NewServeMux()
-
-	dsn := config.DatabaseUsername + ":" + config.DatabasePassword + "@tcp(" + config.DatabaseHost + ":" + config.DatabasePort + ")/" + config.DatabaseName + "?parseTime=True"
-	database, err := gorm.Open(mysql.Open(dsn))
-	if err != nil {
-		log.Fatal(err)
-	}
-	database.AutoMigrate(
-		&models.DBUser{},
-	)
+	database := internals.NewDatabase(config).Connect()
 
 	userRepository := repositories.NewUserRepository(database)
 
-	authService := services.NewAuthenticationService(config, userRepository)
+	authenticationService := services.NewAuthenticationService(config, userRepository)
+	authorizationService := services.NewAuthorizationService(config, userRepository, authenticationService)
 
-	handlers := []handlers.Handler{
-		handlers.NewAuthenticationHandler(httpServer, authService),
-	}
+	httpServer := setupHTTPServer(
+		handlers.NewAuthenticationHandler(authenticationService),
+		handlers.NewAuthorizationHandler(authorizationService),
+	)
+
+	go func() {
+		log.Println("Server run on port " + config.Port)
+		if err := http.ListenAndServe(":"+config.Port, httpServer); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Wait for an interrupt signal
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
+
+	// Perform cleanup tasks here
+	log.Println("Shutting down server...")
+}
+
+func setupHTTPServer(handlers ...handlers.Handler) *http.ServeMux {
+	httpServer := http.NewServeMux()
 
 	for _, handler := range handlers {
-		handler.Register()
+		handler.Register(httpServer)
 	}
 
-	log.Println("Server run on port " + config.Port)
-	log.Fatal(http.ListenAndServe(":"+config.Port, httpServer))
+	return httpServer
 }
