@@ -16,8 +16,10 @@ type Config struct {
 	DatabaseUsername string `mapstructure:"DB_USERNAME"`
 	DatabasePassword string `mapstructure:"DB_PASSWORD"`
 
-	JwtSecret  string `mapstructure:"JWT_SECRET"`
-	JwtExpires string `mapstructure:"JWT_EXPIRES"` // Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+	JwtSecret         string `mapstructure:"JWT_SECRET"`
+	JwtRefreshSecret  string `mapstructure:"JWT_REFRESH_SECRET"`
+	JwtExpires        string `mapstructure:"JWT_EXPIRES"`         // Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+	JwtRefreshExpires string `mapstructure:"JWT_REFRESH_EXPIRES"` // Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
 }
 
 func NewConfig() *Config {

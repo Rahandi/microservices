@@ -20,6 +20,7 @@ func NewAuthenticationHandler(authenticationService *services.AuthenticationServ
 func (h *AuthenticationHandler) Register(httpServer *http.ServeMux) {
 	httpServer.HandleFunc("/register", h.registerHandler)
 	httpServer.HandleFunc("/login", h.loginHandler)
+	httpServer.HandleFunc("/refresh-token", h.refreshTokenHandler)
 }
 
 func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +48,22 @@ func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 	response, err := h.authenticationService.Login(&input)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *AuthenticationHandler) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var input models.RefreshTokenRequest
+	err := decoder.Decode(&input)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+	response, err := h.authenticationService.RefreshToken(&input)
 	if err != nil {
 		handleError(w, err)
 		return

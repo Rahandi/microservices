@@ -12,3 +12,8 @@ type JWTClaims struct {
 	*jwt.StandardClaims
 	Email string `json:"email"`
 }
+
+type JWTRefreshClaims struct {
+	*jwt.StandardClaims
+	Token string `json:"token"`
+}
