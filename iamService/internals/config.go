@@ -27,21 +27,39 @@ func NewConfig() *Config {
 
 	file, err := os.Open("config.json")
 	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&config)
-	if err != nil {
-		panic(err)
+		if !os.IsNotExist(err) {
+			panic(err)
+		}
+	} else {
+		defer file.Close()
+		decoder := json.NewDecoder(file)
+		err = decoder.Decode(&config)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
-	err = viper.ReadInConfig()
-	if err != nil {
-		panic(err)
+
+	// Bind each key in the Config struct to a corresponding environment variable
+	keys := []string{
+		"PORT",
+		"DB_NAME",
+		"DB_HOST",
+		"DB_PORT",
+		"DB_USERNAME",
+		"DB_PASSWORD",
+		"JWT_SECRET",
+		"JWT_REFRESH_SECRET",
+		"JWT_EXPIRES",
+		"JWT_REFRESH_EXPIRES",
 	}
+	for _, key := range keys {
+		viper.BindEnv(key)
+	}
+
+	_ = viper.ReadInConfig() // Ignore error if .env file does not exist
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		panic(err)
