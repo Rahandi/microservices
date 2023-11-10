@@ -36,7 +36,7 @@ func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.R
 		handleError(w, err)
 		return
 	}
-	json.NewEncoder(w).Encode(response)
+	handleSuccess(w, response)
 }
 
 func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -52,7 +52,7 @@ func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Requ
 		handleError(w, err)
 		return
 	}
-	json.NewEncoder(w).Encode(response)
+	handleSuccess(w, response)
 }
 
 func (h *AuthenticationHandler) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
@@ -68,5 +68,5 @@ func (h *AuthenticationHandler) refreshTokenHandler(w http.ResponseWriter, r *ht
 		handleError(w, err)
 		return
 	}
-	json.NewEncoder(w).Encode(response)
+	handleSuccess(w, response)
 }

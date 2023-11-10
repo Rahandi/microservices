@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"iamService/services"
 	"net/http"
 )
@@ -27,5 +26,5 @@ func (h *AuthorizationHandler) whoamiHandler(w http.ResponseWriter, r *http.Requ
 		handleError(w, err)
 		return
 	}
-	json.NewEncoder(w).Encode(response)
+	handleSuccess(w, response)
 }
