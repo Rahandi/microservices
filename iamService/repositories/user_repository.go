@@ -3,6 +3,7 @@ package repositories
 import (
 	"iamService/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +23,7 @@ func (r *UserRepository) Create(user *models.DBUser) error {
 	return err
 }
 
-func (r *UserRepository) FindByID(id uint) *models.DBUser {
+func (r *UserRepository) FindByID(id uuid.UUID) *models.DBUser {
 	var user models.DBUser
 	r.db.First(&user, id)
 

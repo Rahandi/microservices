@@ -25,7 +25,7 @@ func (h *AuthenticationHandler) Register(httpServer *http.ServeMux) {
 
 func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var input models.RegisterRequest
+	var input models.RegisterInput
 	err := decoder.Decode(&input)
 	if err != nil {
 		handleError(w, err)
@@ -41,7 +41,7 @@ func (h *AuthenticationHandler) registerHandler(w http.ResponseWriter, r *http.R
 
 func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var input models.LoginRequest
+	var input models.LoginInput
 	err := decoder.Decode(&input)
 	if err != nil {
 		handleError(w, err)
@@ -57,7 +57,7 @@ func (h *AuthenticationHandler) loginHandler(w http.ResponseWriter, r *http.Requ
 
 func (h *AuthenticationHandler) refreshTokenHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var input models.RefreshTokenRequest
+	var input models.RefreshTokenInput
 	err := decoder.Decode(&input)
 	if err != nil {
 		handleError(w, err)

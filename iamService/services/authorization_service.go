@@ -5,7 +5,8 @@ import (
 	"iamService/internals"
 	"iamService/models"
 	"iamService/repositories"
-	"strconv"
+
+	"github.com/google/uuid"
 )
 
 type AuthorizationService struct {
@@ -22,23 +23,23 @@ func NewAuthorizationService(config *internals.Config, repository *repositories.
 	}
 }
 
-func (s *AuthorizationService) WhoAmI(token string) (*models.WhoAmIResponse, error) {
+func (s *AuthorizationService) WhoAmI(token string) (*models.WhoAmIOutput, error) {
 	claims, err := s.authenticationService.DecodeToken(token)
 	if err != nil {
 		return nil, err
 	}
 
-	userId, err := strconv.Atoi(claims.Subject)
+	userId, err := uuid.Parse(claims.Subject)
 	if err != nil {
 		return nil, err
 	}
 
-	user := s.userRepository.FindByID(uint(userId))
+	user := s.userRepository.FindByID(userId)
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
 
-	return &models.WhoAmIResponse{
+	return &models.WhoAmIOutput{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,

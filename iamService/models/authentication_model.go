@@ -1,32 +1,32 @@
 package models
 
-type RegisterRequest struct {
+type RegisterInput struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type RegisterResponse struct {
+type RegisterOutput struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }
 
-type LoginRequest struct {
+type LoginInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type LoginResponse struct {
+type LoginOutput struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }
 
-type RefreshTokenRequest struct {
+type RefreshTokenInput struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }
 
-type RefreshTokenResponse struct {
+type RefreshTokenOutput struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refresh_token"`
 }

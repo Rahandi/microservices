@@ -1,11 +1,14 @@
 package models
 
-import "github.com/golang-jwt/jwt"
+import (
+	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
+)
 
-type WhoAmIResponse struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
+type WhoAmIOutput struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
 }
 
 type JWTClaims struct {

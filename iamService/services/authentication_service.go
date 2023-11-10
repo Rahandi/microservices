@@ -7,10 +7,10 @@ import (
 	"iamService/models"
 	"iamService/repositories"
 	"log"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,7 +26,7 @@ func NewAuthenticationService(config *internals.Config, repository *repositories
 	}
 }
 
-func (s *AuthenticationService) Register(input *models.RegisterRequest) (*models.RegisterResponse, error) {
+func (s *AuthenticationService) Register(input *models.RegisterInput) (*models.RegisterOutput, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), 12)
 	if err != nil {
 		return nil, err
@@ -53,13 +53,13 @@ func (s *AuthenticationService) Register(input *models.RegisterRequest) (*models
 		return nil, err
 	}
 
-	return &models.RegisterResponse{
+	return &models.RegisterOutput{
 		Token:        token,
 		RefreshToken: refreshToken,
 	}, nil
 }
 
-func (s *AuthenticationService) Login(input *models.LoginRequest) (*models.LoginResponse, error) {
+func (s *AuthenticationService) Login(input *models.LoginInput) (*models.LoginOutput, error) {
 	user := s.userRepository.FindByEmail(input.Email)
 	if user == nil {
 		return nil, errors.New("user not found")
@@ -80,13 +80,13 @@ func (s *AuthenticationService) Login(input *models.LoginRequest) (*models.Login
 		return nil, err
 	}
 
-	return &models.LoginResponse{
+	return &models.LoginOutput{
 		Token:        token,
 		RefreshToken: refreshToken,
 	}, nil
 }
 
-func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenRequest) (*models.RefreshTokenResponse, error) {
+func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenInput) (*models.RefreshTokenOutput, error) {
 	claims, err := s.DecodeToken(input.Token)
 	if err != nil {
 		return nil, err
@@ -101,12 +101,12 @@ func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenRequest) 
 		return nil, errors.New("invalid token")
 	}
 
-	userId, err := strconv.Atoi(claims.Subject)
+	userId, err := uuid.Parse(claims.Subject)
 	if err != nil {
 		return nil, err
 	}
 
-	user := s.userRepository.FindByID(uint(userId))
+	user := s.userRepository.FindByID(userId)
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -121,7 +121,7 @@ func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenRequest) 
 		return nil, err
 	}
 
-	return &models.RefreshTokenResponse{
+	return &models.RefreshTokenOutput{
 		Token:        newToken,
 		RefreshToken: newRefreshToken,
 	}, nil

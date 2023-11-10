@@ -33,6 +33,7 @@ require (
 
 require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/google/uuid v1.1.2
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/spf13/viper v1.17.0
