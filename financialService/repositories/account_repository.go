@@ -3,6 +3,7 @@ package repositories
 import (
 	"financialService/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -18,6 +19,11 @@ func NewAccountRepository(db *gorm.DB) *AccountRepository {
 }
 
 func (r *AccountRepository) Create(account *models.DBAccount) error {
-	err := r.db.Create(account).Error
+	var err error
+	account.ID, err = uuid.NewRandom()
+	if err != nil {
+		return err
+	}
+	err = r.db.Create(account).Error
 	return err
 }

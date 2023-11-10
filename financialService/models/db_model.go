@@ -12,7 +12,7 @@ import (
 )
 
 type DBAccount struct {
-	ID            uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID            uuid.UUID `gorm:"primaryKey"`
 	UserId        uuid.UUID
 	Name          string
 	AccountNumber string
@@ -22,7 +22,7 @@ type DBAccount struct {
 }
 
 type DBBalance struct {
-	ID        uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID        uuid.UUID `gorm:"primaryKey"`
 	AccountId uuid.UUID
 	Amount    float64
 	CreatedAt time.Time
@@ -31,7 +31,7 @@ type DBBalance struct {
 }
 
 type DBBudget struct {
-	ID          uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID          uuid.UUID `gorm:"primaryKey"`
 	Date        datatypes.Date
 	Budget      float64
 	Realization float64   `gorm:"default:0"`
@@ -42,7 +42,7 @@ type DBBudget struct {
 }
 
 type DBTransaction struct {
-	ID          uuid.UUID `gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ID          uuid.UUID `gorm:"primaryKey"`
 	AccountId   uuid.UUID
 	DateTime    datatypes.Date
 	Description sql.NullString

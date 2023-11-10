@@ -19,7 +19,12 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(user *models.DBUser) error {
-	err := r.db.Create(user).Error
+	var err error
+	user.ID, err = uuid.NewRandom()
+	if err != nil {
+		return err
+	}
+	err = r.db.Create(user).Error
 	return err
 }
 

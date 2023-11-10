@@ -1,0 +1,35 @@
+name: financialservice
+
+services:
+  app:
+    build: .
+    ports:
+      - 8001:8000
+    environment:
+      PORT: 8000
+      DB_NAME: financialservice
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mysql:8.2.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: financialservice
+    ports:
+      - 3306:3306
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+volumes:
+  database:
+    driver: local
