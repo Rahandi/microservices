@@ -11,6 +11,8 @@ type Config struct {
 	Token string `mapstructure:"TOKEN"`
 
 	Admins []int64 `mapstructure:"ADMINS"`
+
+	IAMServiceEndpoint string `mapstructure:"IAMSERVICE_ENDPOINT"`
 }
 
 func NewConfig() *Config {
@@ -36,6 +38,7 @@ func NewConfig() *Config {
 	// Bind each key in the Config struct to a corresponding environment variable
 	keys := []string{
 		"TOKEN",
+		"IAMSERVICE_ENDPOINT",
 	}
 	for _, key := range keys {
 		viper.BindEnv(key)
