@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"financialService/models"
+	"FinancialService/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

@@ -3,9 +3,9 @@ package services
 import (
 	"errors"
 	"fmt"
-	"iamService/internals"
-	"iamService/models"
-	"iamService/repositories"
+	"IAMlService/internals"
+	"IAMlService/models"
+	"IAMlService/repositories"
 	"log"
 	"time"
 
@@ -136,7 +136,7 @@ func (s *AuthenticationService) generateToken(user *models.DBUser) (string, erro
 	claims := &models.JWTClaims{
 		StandardClaims: &jwt.StandardClaims{
 			Subject:   fmt.Sprint(user.ID),
-			Issuer:    "iamService",
+			Issuer:    "IAMlService",
 			ExpiresAt: time.Now().Add(parsedExpires).Unix(),
 		},
 		Email: user.Email,
@@ -160,7 +160,7 @@ func (s *AuthenticationService) generateRefreshToken(user *models.DBUser, token 
 	claims := &models.JWTRefreshClaims{
 		StandardClaims: &jwt.StandardClaims{
 			Subject:   fmt.Sprint(user.ID),
-			Issuer:    "iamService",
+			Issuer:    "IAMlService",
 			ExpiresAt: time.Now().Add(parsedExpires).Unix(),
 		},
 		Token: token,

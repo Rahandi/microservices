@@ -1,10 +1,10 @@
 package main
 
 import (
-	"iamService/handlers"
-	"iamService/internals"
-	"iamService/repositories"
-	"iamService/services"
+	"IAMService/handlers"
+	"IAMService/internals"
+	"IAMService/repositories"
+	"IAMService/services"
 	"log"
 	"net/http"
 	"os"

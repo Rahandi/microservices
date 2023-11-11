@@ -1,4 +1,4 @@
-module financialService
+module FinancialService
 
 go 1.21.4
 

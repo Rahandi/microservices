@@ -2,7 +2,7 @@ package models
 
 import (
 	"database/sql"
-	"financialService/types"
+	"FinancialService/types"
 	"time"
 
 	"gorm.io/datatypes"

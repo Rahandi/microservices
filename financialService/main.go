@@ -1,10 +1,10 @@
 package main
 
 import (
-	"financialService/handlers"
-	"financialService/internals"
-	"financialService/repositories"
-	"financialService/services"
+	"FinancialService/handlers"
+	"FinancialService/internals"
+	"FinancialService/repositories"
+	"FinancialService/services"
 	"log"
 	"net/http"
 	"os"

@@ -1,4 +1,4 @@
-module iamService
+module IAMService
 
 go 1.21.4
 

@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"iamService/models"
+	"IAMService/models"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"

@@ -1,8 +1,8 @@
 package services
 
 import (
-	"financialService/models"
-	"financialService/repositories"
+	"FinancialService/models"
+	"FinancialService/repositories"
 )
 
 type AccountService struct {

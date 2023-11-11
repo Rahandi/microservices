@@ -1,7 +1,7 @@
 package internals
 
 import (
-	"financialService/models"
+	"FinancialService/models"
 	"log"
 
 	"gorm.io/driver/mysql"

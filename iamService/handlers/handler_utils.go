@@ -3,7 +3,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"iamService/models"
+	"IAMlService/models"
 	"net/http"
 )
 

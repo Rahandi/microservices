@@ -3,7 +3,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"financialService/models"
+	"FinancialService/models"
 	"net/http"
 )
 
