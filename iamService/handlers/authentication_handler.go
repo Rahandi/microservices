@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"IAMlService/models"
-	"IAMlService/services"
+	"IAMService/models"
+	"IAMService/services"
 	"encoding/json"
 	"net/http"
 )

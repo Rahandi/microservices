@@ -1,10 +1,10 @@
 package services
 
 import (
+	"IAMService/internals"
+	"IAMService/models"
+	"IAMService/repositories"
 	"errors"
-	"IAMlService/internals"
-	"IAMlService/models"
-	"IAMlService/repositories"
 
 	"github.com/google/uuid"
 )

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"IAMlService/services"
+	"IAMService/services"
 	"net/http"
 )
 

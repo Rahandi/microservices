@@ -1,7 +1,7 @@
 package internals
 
 import (
-	"IAMlService/models"
+	"IAMService/models"
 	"log"
 
 	"gorm.io/driver/mysql"
