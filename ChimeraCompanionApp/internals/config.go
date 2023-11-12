@@ -13,6 +13,11 @@ type Config struct {
 	Admins []int64 `mapstructure:"ADMINS"`
 
 	IAMServiceEndpoint string `mapstructure:"IAMSERVICE_ENDPOINT"`
+
+	RedisHost     string `mapstructure:"REDIS_HOST"`
+	RedisPort     string `mapstructure:"REDIS_PORT"`
+	RedisDB       int    `mapstructure:"REDIS_DB"`
+	RedisPassword string `mapstructure:"REDIS_PASSWORD"`
 }
 
 func NewConfig() *Config {
@@ -39,6 +44,10 @@ func NewConfig() *Config {
 	keys := []string{
 		"TOKEN",
 		"IAMSERVICE_ENDPOINT",
+		"REDIS_HOST",
+		"REDIS_PORT",
+		"REDIS_DB",
+		"REDIS_PASSWORD",
 	}
 	for _, key := range keys {
 		viper.BindEnv(key)
