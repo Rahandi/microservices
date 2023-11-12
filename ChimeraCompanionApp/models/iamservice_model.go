@@ -13,6 +13,27 @@ type IAMServiceRegisterRequest struct {
 }
 
 type IAMServiceRegisterResponse struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
+	Data struct {
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+	Error string `json:"error"`
+}
+
+type LoginInput struct {
+	Email     string `json:"email"`
+	AccountId string `json:"account_id"`
+}
+
+type IAMServiceLoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type IAMServiceLoginResponse struct {
+	Data struct {
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+	Error string `json:"error"`
 }

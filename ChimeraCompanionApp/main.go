@@ -1,7 +1,9 @@
 package main
 
 import (
+	"ChimeraCompanionApp/handlers"
 	"ChimeraCompanionApp/internals"
+	"ChimeraCompanionApp/services"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -23,14 +25,18 @@ func main() {
 
 	updates := bot.GetUpdatesChan(u)
 
+	iamService := services.NewIAMService(config)
+	iamHandler := handlers.NewIAMHandler(iamService)
+
+	ListHandlers := []handlers.Handler{
+		iamHandler,
+	}
+	handler := handlers.NewMainHandler(bot, ListHandlers)
+
 	for update := range updates {
 		if update.Message != nil { // If we got a message
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			msg.ReplyToMessageID = update.Message.MessageID
-
-			bot.Send(msg)
+			handler.Handle(&update)
 		}
 	}
 }
