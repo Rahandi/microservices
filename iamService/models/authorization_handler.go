@@ -6,14 +6,14 @@ import (
 )
 
 type WhoAmIOutput struct {
-	ID    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Email string    `json:"email"`
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	Principal string    `json:"principal"`
 }
 
 type JWTClaims struct {
 	*jwt.StandardClaims
-	Email string `json:"email"`
+	Principal string `json:"principal"`
 }
 
 type JWTRefreshClaims struct {

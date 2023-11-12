@@ -33,9 +33,9 @@ func (s *AuthenticationService) Register(input *models.RegisterInput) (*models.R
 	}
 
 	user := &models.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: string(hashedPassword),
+		Name:      input.Name,
+		Principal: input.Principal,
+		Password:  string(hashedPassword),
 	}
 
 	err = s.userRepository.Create(user)
@@ -60,7 +60,7 @@ func (s *AuthenticationService) Register(input *models.RegisterInput) (*models.R
 }
 
 func (s *AuthenticationService) Login(input *models.LoginInput) (*models.LoginOutput, error) {
-	user := s.userRepository.FindByEmail(input.Email)
+	user := s.userRepository.FindByPrincipal(input.Principal)
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -139,7 +139,7 @@ func (s *AuthenticationService) generateToken(user *models.User) (string, error)
 			Issuer:    "IAMService",
 			ExpiresAt: time.Now().Add(parsedExpires).Unix(),
 		},
-		Email: user.Email,
+		Principal: user.Principal,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

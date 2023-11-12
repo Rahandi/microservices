@@ -40,8 +40,8 @@ func (s *AuthorizationService) WhoAmI(token string) (*models.WhoAmIOutput, error
 	}
 
 	return &models.WhoAmIOutput{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
+		ID:        user.ID,
+		Name:      user.Name,
+		Principal: user.Principal,
 	}, nil
 }

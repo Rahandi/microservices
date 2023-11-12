@@ -39,9 +39,9 @@ func (r *UserRepository) FindByID(id uuid.UUID) *models.User {
 	return &user
 }
 
-func (r *UserRepository) FindByEmail(email string) *models.User {
+func (r *UserRepository) FindByPrincipal(principal string) *models.User {
 	var user models.User
-	r.db.Where("email = ?", email).First(&user)
+	r.db.Where("principal = ?", principal).First(&user)
 
 	if user == (models.User{}) {
 		return nil

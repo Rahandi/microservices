@@ -1,9 +1,9 @@
 package models
 
 type RegisterInput struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name      string `json:"name"`
+	Principal string `json:"principal"`
+	Password  string `json:"password"`
 }
 
 type RegisterOutput struct {
@@ -12,8 +12,8 @@ type RegisterOutput struct {
 }
 
 type LoginInput struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Principal string `json:"principal"`
+	Password  string `json:"password"`
 }
 
 type LoginOutput struct {
