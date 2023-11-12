@@ -22,9 +22,9 @@ func NewIAMService(config *internals.Config) *IAMService {
 
 func (s *IAMService) Register(input *models.RegisterInput) (*models.IAMServiceRegisterResponse, error) {
 	payload := &models.IAMServiceRegisterRequest{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: input.AccountId,
+		Name:      input.Name,
+		Principal: input.AccountId,
+		Password:  input.Password,
 	}
 
 	response := &models.IAMServiceRegisterResponse{}
@@ -43,8 +43,8 @@ func (s *IAMService) Register(input *models.RegisterInput) (*models.IAMServiceRe
 
 func (s *IAMService) Login(input *models.LoginInput) (*models.IAMServiceLoginResponse, error) {
 	payload := &models.IAMServiceLoginRequest{
-		Email:    input.Email,
-		Password: input.AccountId,
+		Principal: input.AccountId,
+		Password:  input.Password,
 	}
 
 	response := &models.IAMServiceLoginResponse{}

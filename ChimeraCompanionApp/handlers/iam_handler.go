@@ -45,9 +45,9 @@ func (h *IAMHandler) Handle(input *tgbotapi.Message) (*tgbotapi.MessageConfig, e
 
 func (h *IAMHandler) Register(input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
 	response, err := h.iamService.Register(&models.RegisterInput{
-		Name:      input.From.UserName,
-		Email:     input.From.UserName,
+		Name:      strings.Join([]string{input.From.FirstName, input.From.LastName}, " "),
 		AccountId: strconv.FormatInt(input.From.ID, 10),
+		Password:  input.From.UserName + strconv.FormatInt(input.From.ID, 10),
 	})
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (h *IAMHandler) Register(input *tgbotapi.Message) (*tgbotapi.MessageConfig,
 
 func (h *IAMHandler) Login(input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
 	response, err := h.iamService.Login(&models.LoginInput{
-		Email:     input.From.UserName,
 		AccountId: strconv.FormatInt(input.From.ID, 10),
+		Password:  input.From.UserName + strconv.FormatInt(input.From.ID, 10),
 	})
 	if err != nil {
 		return nil, err

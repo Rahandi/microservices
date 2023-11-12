@@ -2,14 +2,14 @@ package models
 
 type RegisterInput struct {
 	Name      string `json:"name"`
-	Email     string `json:"email"`
 	AccountId string `json:"account_id"`
+	Password  string `json:"password"`
 }
 
 type IAMServiceRegisterRequest struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name      string `json:"name"`
+	Principal string `json:"principal"`
+	Password  string `json:"password"`
 }
 
 type IAMServiceRegisterResponse struct {
@@ -21,13 +21,13 @@ type IAMServiceRegisterResponse struct {
 }
 
 type LoginInput struct {
-	Email     string `json:"email"`
 	AccountId string `json:"account_id"`
+	Password  string `json:"password"`
 }
 
 type IAMServiceLoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Principal string `json:"principal"`
+	Password  string `json:"password"`
 }
 
 type IAMServiceLoginResponse struct {
