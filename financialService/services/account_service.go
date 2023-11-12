@@ -16,7 +16,7 @@ func NewAccountService(repository *repositories.AccountRepository) *AccountServi
 }
 
 func (s *AccountService) Create(input *models.AccountCreateInput) error {
-	account := &models.DBAccount{
+	account := &models.Account{
 		UserId:        input.UserId,
 		Name:          input.Name,
 		AccountNumber: input.AccountNumber,

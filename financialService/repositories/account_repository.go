@@ -18,7 +18,7 @@ func NewAccountRepository(db *gorm.DB) *AccountRepository {
 	return accountRepository
 }
 
-func (r *AccountRepository) Create(account *models.DBAccount) error {
+func (r *AccountRepository) Create(account *models.Account) error {
 	var err error
 	account.ID, err = uuid.NewRandom()
 	if err != nil {

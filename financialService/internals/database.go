@@ -26,10 +26,10 @@ func (d *Database) Connect() *gorm.DB {
 	}
 
 	database.AutoMigrate(
-		&models.DBAccount{},
-		&models.DBBalance{},
-		&models.DBBudget{},
-		&models.DBTransaction{},
+		&models.Account{},
+		&models.Balance{},
+		&models.Budget{},
+		&models.Transaction{},
 	)
 
 	return database

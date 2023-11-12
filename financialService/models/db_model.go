@@ -1,8 +1,8 @@
 package models
 
 import (
-	"database/sql"
 	"FinancialService/types"
+	"database/sql"
 	"time"
 
 	"gorm.io/datatypes"
@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type DBAccount struct {
+type Account struct {
 	ID            uuid.UUID `gorm:"primaryKey"`
 	UserId        uuid.UUID
 	Name          string
@@ -21,7 +21,7 @@ type DBAccount struct {
 	DeletedAt     gorm.DeletedAt `gorm:"index"`
 }
 
-type DBBalance struct {
+type Balance struct {
 	ID        uuid.UUID `gorm:"primaryKey"`
 	AccountId uuid.UUID
 	Amount    float64
@@ -30,7 +30,7 @@ type DBBalance struct {
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-type DBBudget struct {
+type Budget struct {
 	ID          uuid.UUID `gorm:"primaryKey"`
 	Date        datatypes.Date
 	Budget      float64
@@ -41,7 +41,7 @@ type DBBudget struct {
 	DeletedAt   gorm.DeletedAt `gorm:"index"`
 }
 
-type DBTransaction struct {
+type Transaction struct {
 	ID          uuid.UUID `gorm:"primaryKey"`
 	AccountId   uuid.UUID
 	DateTime    datatypes.Date
