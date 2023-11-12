@@ -18,7 +18,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return userRepository
 }
 
-func (r *UserRepository) Create(user *models.DBUser) error {
+func (r *UserRepository) Create(user *models.User) error {
 	var err error
 	user.ID, err = uuid.NewRandom()
 	if err != nil {
@@ -28,22 +28,22 @@ func (r *UserRepository) Create(user *models.DBUser) error {
 	return err
 }
 
-func (r *UserRepository) FindByID(id uuid.UUID) *models.DBUser {
-	var user models.DBUser
+func (r *UserRepository) FindByID(id uuid.UUID) *models.User {
+	var user models.User
 	r.db.First(&user, id)
 
-	if user == (models.DBUser{}) {
+	if user == (models.User{}) {
 		return nil
 	}
 
 	return &user
 }
 
-func (r *UserRepository) FindByEmail(email string) *models.DBUser {
-	var user models.DBUser
+func (r *UserRepository) FindByEmail(email string) *models.User {
+	var user models.User
 	r.db.Where("email = ?", email).First(&user)
 
-	if user == (models.DBUser{}) {
+	if user == (models.User{}) {
 		return nil
 	}
 

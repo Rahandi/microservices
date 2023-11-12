@@ -26,7 +26,7 @@ func (d *Database) Connect() *gorm.DB {
 	}
 
 	database.AutoMigrate(
-		&models.DBUser{},
+		&models.User{},
 	)
 
 	return database

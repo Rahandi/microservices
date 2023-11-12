@@ -32,7 +32,7 @@ func (s *AuthenticationService) Register(input *models.RegisterInput) (*models.R
 		return nil, err
 	}
 
-	user := &models.DBUser{
+	user := &models.User{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: string(hashedPassword),
@@ -127,7 +127,7 @@ func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenInput) (*
 	}, nil
 }
 
-func (s *AuthenticationService) generateToken(user *models.DBUser) (string, error) {
+func (s *AuthenticationService) generateToken(user *models.User) (string, error) {
 	parsedExpires, err := time.ParseDuration(s.config.JwtExpires)
 	if err != nil {
 		log.Panic(err)
@@ -151,7 +151,7 @@ func (s *AuthenticationService) generateToken(user *models.DBUser) (string, erro
 	return signed, nil
 }
 
-func (s *AuthenticationService) generateRefreshToken(user *models.DBUser, token string) (string, error) {
+func (s *AuthenticationService) generateRefreshToken(user *models.User, token string) (string, error) {
 	parsedExpires, err := time.ParseDuration(s.config.JwtRefreshExpires)
 	if err != nil {
 		log.Panic(err)

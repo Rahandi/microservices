@@ -16,7 +16,7 @@ func handleSuccess(w http.ResponseWriter, response interface{}) {
 
 func handleError(w http.ResponseWriter, err error) {
 	errorResponse := &models.ErrorResponse{
-		Message: err.Error(),
+		Error: err.Error(),
 	}
 	json.NewEncoder(w).Encode(errorResponse)
 }
