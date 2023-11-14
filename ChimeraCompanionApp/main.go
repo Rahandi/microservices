@@ -11,6 +11,7 @@ import (
 
 func main() {
 	config := internals.NewConfig()
+	redis := internals.NewRedis(config)
 	bot, err := tgbotapi.NewBotAPI(config.Token)
 	if err != nil {
 		panic(err)
@@ -25,8 +26,8 @@ func main() {
 
 	updates := bot.GetUpdatesChan(u)
 
-	iamService := services.NewIAMService(config)
-	iamHandler := handlers.NewIAMHandler(iamService)
+	iamService := services.NewIAMService(config, redis)
+	iamHandler := handlers.NewIAMHandler(iamService, redis)
 
 	ListHandlers := []handlers.Handler{
 		iamHandler,

@@ -2,26 +2,33 @@ package internals
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
 )
 
-type HttpClient struct {
+type Http struct {
 	host string
 }
 
-func NewHttpClient(host string) *HttpClient {
-	return &HttpClient{
+func NewHttp(host string) *Http {
+	return &Http{
 		host: host,
 	}
 }
 
-func (c *HttpClient) Get(path string, response interface{}) error {
+func (c *Http) Get(ctx context.Context, path string, response interface{}, headers *map[string]string) error {
 	client := &http.Client{}
 
 	request, err := http.NewRequest("GET", c.host+path, nil)
 	if err != nil {
 		return err
+	}
+
+	if headers != nil {
+		for key, value := range *headers {
+			request.Header.Set(key, value)
+		}
 	}
 
 	resp, err := client.Do(request)
@@ -37,7 +44,7 @@ func (c *HttpClient) Get(path string, response interface{}) error {
 	return nil
 }
 
-func (c *HttpClient) Post(path string, payload interface{}, response interface{}) error {
+func (c *Http) Post(ctx context.Context, path string, payload interface{}, response interface{}, headers *map[string]string) error {
 	client := &http.Client{}
 
 	body, err := json.Marshal(payload)
@@ -49,7 +56,13 @@ func (c *HttpClient) Post(path string, payload interface{}, response interface{}
 	if err != nil {
 		return err
 	}
+
 	request.Header.Set("Content-Type", "application/json")
+	if headers != nil {
+		for key, value := range *headers {
+			request.Header.Set(key, value)
+		}
+	}
 
 	resp, err := client.Do(request)
 	if err != nil {

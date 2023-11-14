@@ -4,18 +4,18 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RedisClient struct {
-	client *redis.Client
+type Redis struct {
+	Client *redis.Client
 }
 
-func NewRedisClient(config *Config) RedisClient {
+func NewRedis(config *Config) *Redis {
 	client := redis.NewClient(&redis.Options{
 		Addr:     config.RedisHost + ":" + config.RedisPort,
 		DB:       config.RedisDB,
 		Password: config.RedisPassword,
 	})
 
-	return RedisClient{
-		client: client,
+	return &Redis{
+		Client: client,
 	}
 }
