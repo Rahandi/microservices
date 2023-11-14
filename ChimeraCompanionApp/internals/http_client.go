@@ -16,6 +16,27 @@ func NewHttpClient(host string) *HttpClient {
 	}
 }
 
+func (c *HttpClient) Get(path string, response interface{}) error {
+	client := &http.Client{}
+
+	request, err := http.NewRequest("GET", c.host+path, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(response)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (c *HttpClient) Post(path string, payload interface{}, response interface{}) error {
 	client := &http.Client{}
 

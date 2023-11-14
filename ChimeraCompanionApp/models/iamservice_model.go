@@ -37,3 +37,12 @@ type IAMServiceLoginResponse struct {
 	}
 	Error string `json:"error"`
 }
+
+type IAMServiceWhoAmIResponse struct {
+	Data struct {
+		ID        string `json:"id"`
+		Name      string `json:"name"`
+		Principal string `json:"principal"`
+	}
+	Error string `json:"error"`
+}
