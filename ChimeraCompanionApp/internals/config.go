@@ -12,7 +12,8 @@ type Config struct {
 
 	Admins []int64 `mapstructure:"ADMINS"`
 
-	IAMServiceEndpoint string `mapstructure:"IAMSERVICE_ENDPOINT"`
+	IAMServiceEndpoint       string `mapstructure:"IAMSERVICE_ENDPOINT"`
+	FinancialServiceEndpoint string `mapstructure:"FINANCIALSERVICE_ENDPOINT"`
 
 	RedisHost     string `mapstructure:"REDIS_HOST"`
 	RedisPort     string `mapstructure:"REDIS_PORT"`

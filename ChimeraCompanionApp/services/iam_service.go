@@ -3,7 +3,6 @@ package services
 import (
 	"ChimeraCompanionApp/internals"
 	"ChimeraCompanionApp/models"
-	"ChimeraCompanionApp/types"
 	"context"
 	"errors"
 )
@@ -20,21 +19,6 @@ func NewIAMService(config *internals.Config, redis *internals.Redis) *IAMService
 		http:  httpClient,
 		redis: redis,
 	}
-}
-
-func (s *IAMService) getAuthHeader(ctx context.Context) (map[string]string, error) {
-	accountId := ctx.Value(types.AccountIdKey).(string)
-	token, err := s.redis.Client.HGet(ctx, accountId, "token").Result()
-	if err != nil {
-		return nil, err
-	}
-
-	headers := map[string]string{}
-	if token != "" {
-		headers["Authorization"] = "Bearer " + token
-	}
-
-	return headers, nil
 }
 
 func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) (*models.IAMServiceRegisterResponse, error) {
@@ -77,7 +61,7 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) (*mode
 }
 
 func (s *IAMService) WhoAmI(ctx context.Context) (*models.IAMServiceWhoAmIResponse, error) {
-	headers, err := s.getAuthHeader(ctx)
+	headers, err := GetAuthHeader(ctx, s.redis)
 	if err != nil {
 		return nil, err
 	}
