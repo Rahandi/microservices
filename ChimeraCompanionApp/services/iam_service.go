@@ -38,6 +38,18 @@ func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) 
 		return nil, errors.New(response.Error)
 	}
 
+	accountId := input.AccountId
+	user := models.User{
+		ID:           accountId,
+		Username:     input.Username,
+		Token:        response.Data.Token,
+		RefreshToken: response.Data.RefreshToken,
+	}
+	_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
+	if err != nil {
+		return nil, err
+	}
+
 	return response, nil
 }
 
@@ -55,6 +67,29 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) (*mode
 
 	if response.Error != "" {
 		return nil, errors.New(response.Error)
+	}
+
+	accountId := input.AccountId
+	exists, err := s.redis.Client.HExists(ctx, accountId, "token").Result()
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		user := models.User{
+			ID:           accountId,
+			Username:     input.Password,
+			Token:        response.Data.Token,
+			RefreshToken: response.Data.RefreshToken,
+		}
+		_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		_, err = s.redis.Client.HSet(ctx, accountId, "token", response.Data.Token, "refresh_token", response.Data.RefreshToken).Result()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return response, nil

@@ -2,6 +2,7 @@ package models
 
 type RegisterInput struct {
 	Name      string `json:"name"`
+	Username  string `json:"username"`
 	AccountId string `json:"account_id"`
 	Password  string `json:"password"`
 }

@@ -4,7 +4,6 @@ import (
 	"ChimeraCompanionApp/internals"
 	"ChimeraCompanionApp/models"
 	"ChimeraCompanionApp/services"
-	"ChimeraCompanionApp/types"
 	"context"
 	"fmt"
 	"strconv"
@@ -51,23 +50,12 @@ func (h *IAMHandler) Handle(ctx context.Context, input *tgbotapi.Message) (*tgbo
 }
 
 func (h *IAMHandler) Register(ctx context.Context, input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
-	response, err := h.iamService.Register(ctx, &models.RegisterInput{
+	_, err := h.iamService.Register(ctx, &models.RegisterInput{
 		Name:      strings.Join([]string{input.From.FirstName, input.From.LastName}, " "),
+		Username:  input.From.UserName,
 		AccountId: strconv.FormatInt(input.From.ID, 10),
 		Password:  input.From.UserName + strconv.FormatInt(input.From.ID, 10),
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	accountId := ctx.Value(types.AccountIdKey).(string)
-	user := models.User{
-		ID:           accountId,
-		Username:     input.From.UserName,
-		Token:        response.Data.Token,
-		RefreshToken: response.Data.RefreshToken,
-	}
-	_, err = h.redis.Client.HSet(ctx, accountId, user).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -79,35 +67,12 @@ func (h *IAMHandler) Register(ctx context.Context, input *tgbotapi.Message) (*tg
 }
 
 func (h *IAMHandler) Login(ctx context.Context, input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
-	response, err := h.iamService.Login(ctx, &models.LoginInput{
+	_, err := h.iamService.Login(ctx, &models.LoginInput{
 		AccountId: strconv.FormatInt(input.From.ID, 10),
 		Password:  input.From.UserName + strconv.FormatInt(input.From.ID, 10),
 	})
 	if err != nil {
 		return nil, err
-	}
-
-	accountId := ctx.Value(types.AccountIdKey).(string)
-	exists, err := h.redis.Client.HExists(ctx, accountId, "token").Result()
-	if err != nil {
-		return nil, err
-	}
-	if !exists {
-		user := models.User{
-			ID:           accountId,
-			Username:     input.From.UserName,
-			Token:        response.Data.Token,
-			RefreshToken: response.Data.RefreshToken,
-		}
-		_, err = h.redis.Client.HSet(ctx, accountId, user).Result()
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		_, err = h.redis.Client.HSet(ctx, accountId, "token", response.Data.Token, "refresh_token", response.Data.RefreshToken).Result()
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	message := fmt.Sprintf("Logged in successfully!\nHello %s!", input.From.FirstName)
