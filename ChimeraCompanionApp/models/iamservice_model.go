@@ -47,3 +47,16 @@ type IAMServiceWhoAmIResponse struct {
 	}
 	Error string `json:"error"`
 }
+
+type IAMServiceRefreshTokenRequest struct {
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+type IAMServiceRefreshTokenResponse struct {
+	Data struct {
+		Token        string `json:"token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+	Error string `json:"error"`
+}

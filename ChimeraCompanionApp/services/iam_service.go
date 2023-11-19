@@ -3,6 +3,7 @@ package services
 import (
 	"ChimeraCompanionApp/internals"
 	"ChimeraCompanionApp/models"
+	"ChimeraCompanionApp/types"
 	"context"
 	"errors"
 )
@@ -21,7 +22,7 @@ func NewIAMService(config *internals.Config, redis *internals.Redis) *IAMService
 	}
 }
 
-func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) (*models.IAMServiceRegisterResponse, error) {
+func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) error {
 	payload := &models.IAMServiceRegisterRequest{
 		Name:      input.Name,
 		Principal: input.AccountId,
@@ -31,11 +32,10 @@ func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) 
 	response := &models.IAMServiceRegisterResponse{}
 	err := s.http.Post(ctx, "/register", payload, response, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
 	if response.Error != "" {
-		return nil, errors.New(response.Error)
+		return errors.New(response.Error)
 	}
 
 	accountId := input.AccountId
@@ -47,13 +47,13 @@ func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) 
 	}
 	_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return response, nil
+	return nil
 }
 
-func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) (*models.IAMServiceLoginResponse, error) {
+func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) error {
 	payload := &models.IAMServiceLoginRequest{
 		Principal: input.AccountId,
 		Password:  input.Password,
@@ -62,17 +62,16 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) (*mode
 	response := &models.IAMServiceLoginResponse{}
 	err := s.http.Post(ctx, "/login", payload, response, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
 	if response.Error != "" {
-		return nil, errors.New(response.Error)
+		return errors.New(response.Error)
 	}
 
 	accountId := input.AccountId
 	exists, err := s.redis.Client.HExists(ctx, accountId, "token").Result()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if !exists {
 		user := models.User{
@@ -83,16 +82,16 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) (*mode
 		}
 		_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
 		if err != nil {
-			return nil, err
+			return err
 		}
 	} else {
 		_, err = s.redis.Client.HSet(ctx, accountId, "token", response.Data.Token, "refresh_token", response.Data.RefreshToken).Result()
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
-	return response, nil
+	return nil
 }
 
 func (s *IAMService) WhoAmI(ctx context.Context) (*models.IAMServiceWhoAmIResponse, error) {
@@ -106,10 +105,42 @@ func (s *IAMService) WhoAmI(ctx context.Context) (*models.IAMServiceWhoAmIRespon
 	if err != nil {
 		return nil, err
 	}
-
 	if response.Error != "" {
 		return nil, errors.New(response.Error)
 	}
 
 	return response, nil
+}
+
+func (s *IAMService) RefreshToken(ctx context.Context) error {
+	accountId := ctx.Value(types.AccountIdKey).(string)
+	token, err := s.redis.Client.HGet(ctx, accountId, "token").Result()
+	if err != nil {
+		return err
+	}
+
+	refreshToken, err := s.redis.Client.HGet(ctx, accountId, "refresh_token").Result()
+	if err != nil {
+		return err
+	}
+
+	request := &models.IAMServiceRefreshTokenRequest{
+		Token:        token,
+		RefreshToken: refreshToken,
+	}
+	response := &models.IAMServiceRefreshTokenResponse{}
+	err = s.http.Post(ctx, "/refresh-token", request, response, nil)
+	if err != nil {
+		return err
+	}
+	if response.Error != "" {
+		return errors.New(response.Error)
+	}
+
+	_, err = s.redis.Client.HSet(ctx, accountId, "token", response.Data.Token, "refresh_token", response.Data.RefreshToken).Result()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

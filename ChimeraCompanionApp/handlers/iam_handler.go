@@ -50,7 +50,7 @@ func (h *IAMHandler) Handle(ctx context.Context, input *tgbotapi.Message) (*tgbo
 }
 
 func (h *IAMHandler) Register(ctx context.Context, input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
-	_, err := h.iamService.Register(ctx, &models.RegisterInput{
+	err := h.iamService.Register(ctx, &models.RegisterInput{
 		Name:      strings.Join([]string{input.From.FirstName, input.From.LastName}, " "),
 		Username:  input.From.UserName,
 		AccountId: strconv.FormatInt(input.From.ID, 10),
@@ -67,7 +67,7 @@ func (h *IAMHandler) Register(ctx context.Context, input *tgbotapi.Message) (*tg
 }
 
 func (h *IAMHandler) Login(ctx context.Context, input *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
-	_, err := h.iamService.Login(ctx, &models.LoginInput{
+	err := h.iamService.Login(ctx, &models.LoginInput{
 		AccountId: strconv.FormatInt(input.From.ID, 10),
 		Password:  input.From.UserName + strconv.FormatInt(input.From.ID, 10),
 	})
