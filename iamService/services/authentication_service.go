@@ -87,9 +87,18 @@ func (s *AuthenticationService) Login(input *models.LoginInput) (*models.LoginOu
 }
 
 func (s *AuthenticationService) RefreshToken(input *models.RefreshTokenInput) (*models.RefreshTokenOutput, error) {
-	claims, err := s.DecodeToken(input.Token)
+	parsed, err := jwt.ParseWithClaims(input.Token, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(s.config.JwtSecret), nil
+	})
 	if err != nil {
-		return nil, err
+		if ve, ok := err.(*jwt.ValidationError); ok && ve.Errors != jwt.ValidationErrorExpired {
+			return nil, err
+		}
+	}
+
+	claims, ok := parsed.Claims.(*models.JWTClaims)
+	if !ok {
+		return nil, errors.New("invalid token")
 	}
 
 	refreshClaims, err := s.DecodeRefreshToken(input.RefreshToken)
