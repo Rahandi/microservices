@@ -17,7 +17,9 @@ func NewAccountHandler(accountService *services.AccountService) *AccountHandler 
 	}
 }
 
-func (h *AccountHandler) Register(httpServer *http.ServeMux) {}
+func (h *AccountHandler) Register(mux *http.ServeMux) {
+	mux.HandleFunc("/account/create", h.Create)
+}
 
 func (h *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)

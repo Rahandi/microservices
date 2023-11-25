@@ -54,6 +54,7 @@ func (s *AuthenticationService) Register(input *models.RegisterInput) (*models.R
 	}
 
 	return &models.RegisterOutput{
+		Id:           user.ID,
 		Token:        token,
 		RefreshToken: refreshToken,
 	}, nil
@@ -81,6 +82,7 @@ func (s *AuthenticationService) Login(input *models.LoginInput) (*models.LoginOu
 	}
 
 	return &models.LoginOutput{
+		Id:           user.ID,
 		Token:        token,
 		RefreshToken: refreshToken,
 	}, nil

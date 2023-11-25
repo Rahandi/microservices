@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type RegisterInput struct {
 	Name      string `json:"name"`
 	Principal string `json:"principal"`
@@ -7,8 +9,9 @@ type RegisterInput struct {
 }
 
 type RegisterOutput struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
+	Id           uuid.UUID `json:"id"`
+	Token        string    `json:"token"`
+	RefreshToken string    `json:"refresh_token"`
 }
 
 type LoginInput struct {
@@ -17,8 +20,9 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
-	Token        string `json:"token"`
-	RefreshToken string `json:"refresh_token"`
+	Id           uuid.UUID `json:"id"`
+	Token        string    `json:"token"`
+	RefreshToken string    `json:"refresh_token"`
 }
 
 type RefreshTokenInput struct {

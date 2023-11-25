@@ -40,10 +40,13 @@ func (s *IAMService) Register(ctx context.Context, input *models.RegisterInput) 
 
 	accountId := input.AccountId
 	user := models.User{
-		ID:           accountId,
-		Username:     input.Username,
-		Token:        response.Data.Token,
-		RefreshToken: response.Data.RefreshToken,
+		ID:       accountId,
+		Username: input.Username,
+		IAMData: models.IAMData{
+			Id:           response.Data.Id,
+			Token:        response.Data.Token,
+			RefreshToken: response.Data.RefreshToken,
+		},
 	}
 	_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
 	if err != nil {
@@ -75,10 +78,13 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) error 
 	}
 	if !exists {
 		user := models.User{
-			ID:           accountId,
-			Username:     input.Password,
-			Token:        response.Data.Token,
-			RefreshToken: response.Data.RefreshToken,
+			ID:       accountId,
+			Username: input.Password,
+			IAMData: models.IAMData{
+				Id:           response.Data.Id,
+				Token:        response.Data.Token,
+				RefreshToken: response.Data.RefreshToken,
+			},
 		}
 		_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
 		if err != nil {

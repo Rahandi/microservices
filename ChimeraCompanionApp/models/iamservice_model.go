@@ -1,5 +1,7 @@
 package models
 
+import "github.com/google/uuid"
+
 type RegisterInput struct {
 	Name      string `json:"name"`
 	Username  string `json:"username"`
@@ -15,8 +17,9 @@ type IAMServiceRegisterRequest struct {
 
 type IAMServiceRegisterResponse struct {
 	Data struct {
-		Token        string `json:"token"`
-		RefreshToken string `json:"refresh_token"`
+		Id           uuid.UUID `json:"id"`
+		Token        string    `json:"token"`
+		RefreshToken string    `json:"refresh_token"`
 	}
 	Error string `json:"error"`
 }
@@ -33,17 +36,18 @@ type IAMServiceLoginRequest struct {
 
 type IAMServiceLoginResponse struct {
 	Data struct {
-		Token        string `json:"token"`
-		RefreshToken string `json:"refresh_token"`
+		Id           uuid.UUID `json:"id"`
+		Token        string    `json:"token"`
+		RefreshToken string    `json:"refresh_token"`
 	}
 	Error string `json:"error"`
 }
 
 type IAMServiceWhoAmIResponse struct {
 	Data struct {
-		ID        string `json:"id"`
-		Name      string `json:"name"`
-		Principal string `json:"principal"`
+		Id        uuid.UUID `json:"id"`
+		Name      string    `json:"name"`
+		Principal string    `json:"principal"`
 	}
 	Error string `json:"error"`
 }

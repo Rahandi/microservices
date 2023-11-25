@@ -2,16 +2,15 @@ package services
 
 import (
 	"ChimeraCompanionApp/internals"
-	"ChimeraCompanionApp/types"
 	"context"
 )
 
 func GetAuthHeader(ctx context.Context, redis *internals.Redis) (map[string]string, error) {
-	accountId := ctx.Value(types.AccountIdKey).(string)
-	token, err := redis.Client.HGet(ctx, accountId, "token").Result()
+	IAMData, err := redis.GetUserIAMData(ctx)
 	if err != nil {
 		return nil, err
 	}
+	token := IAMData.Token
 
 	headers := map[string]string{}
 	if token != "" {

@@ -9,7 +9,7 @@ services:
       PORT: 8000
       DB_NAME: financialservice
       DB_HOST: host.docker.internal
-      DB_PORT: 3306
+      DB_PORT: 3307
       DB_USERNAME: root
       DB_PASSWORD: secret
     depends_on:
@@ -22,7 +22,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: financialservice
     ports:
-      - 3306:3306
+      - 3307:3306
     volumes:
       - database:/var/lib/mysql
     healthcheck:
