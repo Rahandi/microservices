@@ -15,7 +15,7 @@ type Account struct {
 	ID            uuid.UUID `gorm:"primaryKey"`
 	UserId        uuid.UUID
 	Name          string
-	AccountNumber string
+	AccountNumber string `gorm:"unique"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt `gorm:"index"`

@@ -26,10 +26,14 @@ func main() {
 
 	updates := bot.GetUpdatesChan(u)
 
+	financialService := services.NewFinancialService(config, redis)
 	iamService := services.NewIAMService(config, redis)
+
+	financialHandler := handlers.NewFinancialHandler(financialService, redis)
 	iamHandler := handlers.NewIAMHandler(iamService, redis)
 
 	ListHandlers := []handlers.Handler{
+		financialHandler,
 		iamHandler,
 	}
 	handler := handlers.NewMainHandler(bot, ListHandlers)

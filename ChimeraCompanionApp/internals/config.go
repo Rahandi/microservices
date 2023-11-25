@@ -45,6 +45,7 @@ func NewConfig() *Config {
 	keys := []string{
 		"TOKEN",
 		"IAMSERVICE_ENDPOINT",
+		"FINANCIALSERVICE_ENDPOINT",
 		"REDIS_HOST",
 		"REDIS_PORT",
 		"REDIS_DB",

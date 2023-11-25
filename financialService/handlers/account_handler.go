@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"encoding/json"
 	"FinancialService/models"
 	"FinancialService/services"
+	"encoding/json"
 	"net/http"
 )
 
@@ -17,8 +17,8 @@ func NewAccountHandler(accountService *services.AccountService) *AccountHandler 
 	}
 }
 
-func (h *AccountHandler) Register(mux *http.ServeMux) {
-	mux.HandleFunc("/account/create", h.Create)
+func (h *AccountHandler) Register(httpServer *http.ServeMux) {
+	httpServer.HandleFunc("/account/create", h.Create)
 }
 
 func (h *AccountHandler) Create(w http.ResponseWriter, r *http.Request) {

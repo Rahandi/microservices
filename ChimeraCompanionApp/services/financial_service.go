@@ -3,10 +3,8 @@ package services
 import (
 	"ChimeraCompanionApp/internals"
 	"ChimeraCompanionApp/models"
-	"ChimeraCompanionApp/types"
 	"context"
-
-	"github.com/google/uuid"
+	"fmt"
 )
 
 type FinancialService struct {
@@ -23,18 +21,19 @@ func NewFinancialService(config *internals.Config, redis *internals.Redis) *Fina
 	}
 }
 
-func (s *FinancialService) CreateAccount(ctx context.Context, input *models.AccountCreateInput) error {
-	accountId := ctx.Value(types.AccountIdKey).(string)
-	userId, err := s.redis.Client.HGet(ctx, accountId, "iamservice.id").Result()
+func (s *FinancialService) AccountCreate(ctx context.Context, input *models.AccountCreateInput) error {
+	IAMData, err := s.redis.GetUserIAMData(ctx)
 	if err != nil {
 		return err
 	}
 
 	payload := &models.FinancialServiceAccountCreateRequest{
-		UserId:        uuid.MustParse(userId),
+		UserId:        IAMData.Id,
 		Name:          input.Name,
 		AccountNumber: input.AccountNumber,
 	}
+
+	fmt.Println(payload)
 
 	response := &models.FinancialServiceAccountCreateResponse{}
 	err = s.http.Post(ctx, "/account/create", payload, response, nil)

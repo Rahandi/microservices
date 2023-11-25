@@ -87,7 +87,7 @@ func (h *IAMHandler) WhoAmI(ctx context.Context, input *tgbotapi.Message) (*tgbo
 		return nil, err
 	}
 
-	message := fmt.Sprintf("Name: %s \nPrincipal: %s", response.Data.Name, response.Data.Principal)
+	message := fmt.Sprintf("Id: %s \nName: %s \nPrincipal: %s", response.Data.Id, response.Data.Name, response.Data.Principal)
 	output := tgbotapi.NewMessage(input.Chat.ID, message)
 
 	return &output, nil

@@ -6,6 +6,7 @@ import (
 	"ChimeraCompanionApp/types"
 	"context"
 	"errors"
+	"fmt"
 )
 
 type IAMService struct {
@@ -71,30 +72,21 @@ func (s *IAMService) Login(ctx context.Context, input *models.LoginInput) error 
 		return errors.New(response.Error)
 	}
 
+	fmt.Println(response.Data.Id)
+
 	accountId := input.AccountId
-	exists, err := s.redis.Client.HExists(ctx, accountId, "token").Result()
+	user := models.User{
+		ID:       accountId,
+		Username: input.Password,
+		IAMData: models.IAMData{
+			Id:           response.Data.Id,
+			Token:        response.Data.Token,
+			RefreshToken: response.Data.RefreshToken,
+		},
+	}
+	_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
 	if err != nil {
 		return err
-	}
-	if !exists {
-		user := models.User{
-			ID:       accountId,
-			Username: input.Password,
-			IAMData: models.IAMData{
-				Id:           response.Data.Id,
-				Token:        response.Data.Token,
-				RefreshToken: response.Data.RefreshToken,
-			},
-		}
-		_, err = s.redis.Client.HSet(ctx, accountId, user).Result()
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err = s.redis.Client.HSet(ctx, accountId, "token", response.Data.Token, "refresh_token", response.Data.RefreshToken).Result()
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil
