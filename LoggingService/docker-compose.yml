@@ -1,17 +1,13 @@
-# ELK Stack
+# ELK Stack, TODO: this is not working
 name: logservice
 
 services:
-  # Elasticsearch, TODO: this is not working
+  # Elasticsearch
   elasticsearch:
     image: elasticsearch:8.11.0
     container_name: elasticsearch
     environment:
-      - node.name=elasticsearch
-      - cluster.name=elasticsearch
-      - discovery.seed_hosts=elasticsearch
-      - cluster.initial_master_nodes=elasticsearch
-      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=secret
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
@@ -43,8 +39,8 @@ services:
     container_name: kibana
     ports:
       - 5601:5601
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
     depends_on:
       - elasticsearch
 

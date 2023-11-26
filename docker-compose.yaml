@@ -1,4 +1,8 @@
 name: development
+version: "3.8"
+
+include:
+  - ./LoggingService/docker-compose.yml
 
 services:
   database:
