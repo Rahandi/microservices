@@ -12,19 +12,10 @@ import (
 )
 
 type Account struct {
-	ID            uuid.UUID `gorm:"primaryKey"`
-	UserId        uuid.UUID
-	Name          string
-	AccountNumber string `gorm:"unique"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
-}
-
-type Balance struct {
 	ID        uuid.UUID `gorm:"primaryKey"`
-	AccountId uuid.UUID
-	Amount    float64
+	UserId    uuid.UUID
+	Name      string
+	Balance   float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

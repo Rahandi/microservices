@@ -27,7 +27,6 @@ func (d *Database) Connect() *gorm.DB {
 
 	database.AutoMigrate(
 		&models.Account{},
-		&models.Balance{},
 		&models.Budget{},
 		&models.Transaction{},
 	)
